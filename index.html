@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dulces Nutritivos - SWEETDELIGHT</title>
+    <style>
+        /* Overlay receta */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .overlay.active {
+            display: flex;
+        }
+        .receta-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(255,182,193,0.25);
+            padding: 32px 28px 22px 28px;
+            max-width: 350px;
+            width: 90vw;
+            text-align: center;
+            position: relative;
+            animation: popin 0.25s;
+        }
+        @keyframes popin {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .receta-card h2 {
+            color: #ff69b4;
+            margin-bottom: 10px;
+        }
+        .receta-card .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #ff69b4;
+            cursor: pointer;
+        }
+        .receta-card .precio {
+            margin-top: 18px;
+            font-size: 1.2em;
+            color: #ff1493;
+            font-weight: bold;
+        }
+        .topbar {
+            width: 100%;
+            background: linear-gradient(90deg, #ffb6c1 0%, #fffbe6 100%);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 0 10px 0;
+            box-shadow: 0 2px 8px rgba(255,182,193,0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .icon-link {
+            margin-left: 12px;
+            margin-right: 12px;
+            display: inline-block;
+            transition: transform 0.15s;
+        }
+        .icon-link:hover {
+            transform: scale(1.18) rotate(-8deg);
+            opacity: 0.8;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #ffe6f0 0%, #fffbe6 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .portada {
+            background: linear-gradient(120deg, #ffb6c1 60%, #fffbe6 100%);
+            color: #fff;
+            text-align: center;
+            padding: 56px 20px 36px 20px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 8px 24px rgba(255,182,193,0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        .portada-icono {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 18px;
+            filter: drop-shadow(0 2px 8px #ff69b4aa);
+            animation: popin 0.7s;
+        }
+        .portada h1 {
+            font-size: 3.2em;
+            margin: 0 0 12px 0;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px #ff69b4aa;
+        }
+        .portada p {
+            font-size: 1.35em;
+            margin: 0 auto;
+            max-width: 500px;
+            color: #fffbe6;
+            text-shadow: 0 1px 4px #ff69b4aa;
+            line-height: 1.5;
+            background: rgba(255,182,193,0.10);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: inline-block;
+        }
+        .catalogo {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px 40px;
+            margin: 60px 0 40px 0;
+            align-items: flex-start;
+        }
+        .dulce {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 380px; /* Antes: 320px */
+            padding: 32px 24px 24px 24px;
+            margin-top: 0;
+            margin-top: 40px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .catalogo .dulce:nth-child(2) {
+            margin-top: 200px; /* Ajusta el valor según lo que necesites */
+        }
+        .dulce:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 6px 18px rgba(255,182,193,0.18);
+        }
+        .dulce img {
+            width: 160px;   /* Antes: 120px */
+            height: 160px;  /* Antes: 120px */
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 18px;
+            border: 3px solid #ffb6c1;
+        }
+        .dulce h2 {
+            margin: 16px 0 12px 0;
+            font-size: 1.7em; /* Antes: 1.3em */
+            color: #ff69b4;
+        }
+        .dulce p {
+            font-size: 1.2em; /* Antes: 1em */
+            color: #555;
+        }
+        .dulce button {
+            margin-top: 12px;
+            background: #ff69b4;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .dulce button:hover {
+            background: #ff1493;
+        }
+        @media (max-width: 900px) {
+    .catalogo {
+        flex-direction: column;
+        align-items: center;
+        gap: 28px 0;
+    }
+    .dulce {
+        width: 90vw;
+        max-width: 420px;
+        margin-top: 28px;
+        padding: 24px 10px 20px 10px;
+    }
+    .dulce img {
+        width: 120px;
+        height: 120px;
+    }
+    .dulce h2 {
+        font-size: 1.3em;
+    }
+    .dulce p {
+        font-size: 1em;
+    }
+    .catalogo .dulce:nth-child(2) {
+        margin-top: 28px;
+    }
+    .topbar {
+        justify-content: center;
+        padding: 10px 0;
+    }
+}
+        @media (max-width: 700px) {
+            .catalogo {
+                flex-direction: column;
+                align-items: center;
+            }
+            .topbar {
+                justify-content: center;
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <span style="font-weight: 500; color: #ff69b4; font-size: 1.1em; margin-right: 18px;">Contáctanos</span>
+        <a href="https://www.facebook.com/profile.php?id=61578201607371" target="_blank" class="icon-link" title="Facebook">
+            <img src="fb.png" alt="Facebook" style="height:28px;width:28px;vertical-align:middle;">
+        </a>
+        <a href="https://www.instagram.com/swe.etdeligth/" target="_blank" class="icon-link" title="Instagram">
+            <img src="ins.png" alt="Instagram" style="height:28px;width:28px;vertical-align:middle;">
+        </a>
+        <a href="https://www.tiktok.com/@sweet_delight8" target="_blank" class="icon-link" title="TikTok">
+            <img src="tiktok.png" alt="TikTok" style="height:28px;width:28px;vertical-align:middle;">
+        </a>
+    </div>
+    <!-- Cambia solo la sección de la portada -->
+    <div class="portada">
+        <img src="logo1.png" alt="Dulce" class="portada-icono">
+        <h1>SWEETDELIGHT</h1>
+        <p>🍓✨ ¡Bienvenid@ a un dulce cambio! ✨🍓
+        Gracias por visitarnos. Aquí encontrarás postres saludables, deliciosos y conscientes con el planeta. Cada creación está hecha con ingredientes naturales, sin culpa y con mucho amor 💚.
+        Además, usamos envases 100% biodegradables, porque creemos que el placer de comer bien también debe cuidar el mundo en el que vivimos.
+        ¡Disfruta, comparte y únete a este emprendimiento que endulza tu vida de forma saludable y sostenible! 🌍🍰</p>
+    </div>
+    <div class="catalogo">
+        <div class="dulce">
+            <img src="barras.png" alt="gomitas">
+            <h2>Glow Bar</h2>
+            <p>Suaves y energéticas, hechas con avena, miel, plátano y frutos secos. El toque de chocolate las convierte en el snack favorito de todos.</p>
+            <button class="ver-receta-btn" data-dulce="gomitas">Ver Ingredientes</button>
+        </div>
+        <div class="dulce">
+            <img src="yogurt.png" alt="Chocolates">
+            <h2>Straw Chia</h2>
+            <p>Fresca y nutritiva, con capas de chía, fresa, miel, leche, granola y yogurt griego. Ideal para cualquier momento del día.</p>
+            <button class="ver-receta-btn" data-dulce="chocolates">Ver Ingredientes</button>
+        </div>
+        <div class="dulce">
+            <img src="fresa.png" alt="Caramelos">
+            <h2>Bloom Cake</h2>
+            <p>Deliciosamente suave y frutal. Preparada con avena, plátano, miel, yogurt griego y fresas, perfecta para disfrutar con calma.</p>
+            <button class="ver-receta-btn" data-dulce="caramelos">Ver Ingredientes</button>
+        </div>
+    </div>
+
+    <!-- Overlay Receta -->
+    <div class="overlay" id="recetaOverlay">
+        <div class="receta-card" id="recetaCard">
+            <button class="close-btn" id="closeReceta">×</button>
+            <h2 id="recetaTitulo"></h2>
+            <div id="recetaTexto"></div>
+            <div class="precio" id="recetaPrecio"></div>
+        </div>
+    </div>
+
+    <script>
+    // Recetas y precios
+    const recetas = {
+        gomitas: {
+            titulo: 'Glow Bar',
+            texto: `<b>Ingredientes:</b><br>• Avena<br>• Miel<br>• Frutos Secos<br>• Platano<br>• Chocolate<br><b>`,
+            precio: 'S/ 2.00'
+        },
+        chocolates: {
+            titulo: 'Straw Chia',
+            texto: `<b>Ingredientes:</b><br>• Chia<br>• Fresa<br>• Leche<br>• Miel<br>• Granola <br>• Yogurt griego<b>`,
+            precio: 'S/ 3.00'
+        },
+        caramelos: {
+            titulo: 'Bloom Cake',
+            texto: `<b>Ingredientes:</b><br>• Avena<br>• Platano<br>• Miel<br>• Granola<br>• Yogurt griego<b>`,
+            precio: 'S/ 1.50'
+        },
+    };
+    // Mostrar receta
+    document.querySelectorAll('.ver-receta-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const dulce = this.getAttribute('data-dulce');
+            const receta = recetas[dulce];
+            document.getElementById('recetaTitulo').innerText = receta.titulo;
+            document.getElementById('recetaTexto').innerHTML = receta.texto;
+            document.getElementById('recetaPrecio').innerText = receta.precio;
+            document.getElementById('recetaOverlay').classList.add('active');
+        });
+    });
+    // Cerrar receta
+    document.getElementById('closeReceta').onclick = function() {
+        document.getElementById('recetaOverlay').classList.remove('active');
+    };
+    // Cerrar al hacer click fuera de la tarjeta
+    document.getElementById('recetaOverlay').onclick = function(e) {
+        if(e.target === this) this.classList.remove('active');
+    };
+    </script>
+</body>
+</html>
